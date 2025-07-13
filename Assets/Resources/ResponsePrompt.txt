@@ -1,0 +1,12 @@
+Decide whether the user's message is a command to create, modify, or manipulate objects in Reality Flow VR.
+
+If it is a creation-related command (e.g., "spawn a tree", "add a cube", "rotate this"), return "yes".  
+If it is unrelated, vague, social, or not clearly executable, return "no".
+
+Respond only in the following JSON format:
+{
+  "answer": "yes" or "no",
+  "reason": "[brief explanation here]"
+}
+
+Do not include any additional commentary or thinking outside of this format.
