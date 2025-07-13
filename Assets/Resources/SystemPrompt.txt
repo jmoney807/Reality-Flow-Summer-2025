@@ -18,6 +18,8 @@ Respond with "no" if:
 
 If the user says "the" by itself, ignore this message entirely.
 
+Assume user intends to create if any noun is present. Reject only if clearly not related.
+
 Important:
 - Do **not** include any reasoning or explanation in your response unless specifically requested.
 - If needed, internal thoughts or reasoning may be logged internally (e.g., to console) but should never appear in the chat panel or spoken response.

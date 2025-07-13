@@ -1,4 +1,3 @@
-//using System.Diagnostics;
 using UnityEngine;
 using Diagnostics = System.Diagnostics;
 
@@ -13,11 +12,11 @@ public class VoskLauncher : MonoBehaviour
         // pythonw is used to run Python scripts without opening a console window
         // python is used to run Python scripts with a console window
         string pythonPath = "pythonw";
-        string scriptPath = Application.dataPath + "/Scripts/Python/Vosk_speech_to_text.py";
+        string Vosk_Script_path = Application.dataPath + "/Scripts/Python/Vosk_speech_to_text.py";
         var psi = new Diagnostics.ProcessStartInfo
         {
             FileName = pythonPath,
-            Arguments = $"\"{scriptPath}\"",
+            Arguments = $"\"{Vosk_Script_path}\"",
         };
 
         voskProcess = Diagnostics.Process.Start(psi);

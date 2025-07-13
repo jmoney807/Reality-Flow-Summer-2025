@@ -13,13 +13,6 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 assets_path = os.path.join(script_dir.split("Assets")[0], "Assets")
 MODEL_PATH = os.path.join(assets_path, "Plugins", "Vosk", "Models", "vosk-model-small-en-us-0.15")
 
-# More direct way to set the model path
-# MODEL_PATH = r"C:\Users\antho\Ubiq\RealityFlow_Ubiq\Unity\Assets\Plugins\Vosk\Models\vosk-model-small-en-us-0.15"
-
-#script_dir = os.path.dirname(os.path.abspath(__file__))
-#assets_path = os.path.join(script_dir.split("Assets")[0], "Assets")
-#MODEL_PATH = os.path.join(assets_path, "Plugins", "Vosk", "Models", "vosk-model-small-en-us-0.22")
-
 #print("✅ Vosk Model Path:", MODEL_PATH)
 
 
@@ -33,7 +26,7 @@ recognizer.SetWords(True)
 
 # Setup socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.connect(("localhost", 65432))  # Port must match Unity listener
+sock.connect(("localhost", 65433))  # Port must match Unity listener
 
 # Create a queue to hold audio data
 q = queue.Queue()
