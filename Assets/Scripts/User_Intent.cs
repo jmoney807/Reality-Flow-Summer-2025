@@ -129,6 +129,8 @@ namespace Neocortex.Samples
 
                 // Add Alejandro's UI Canvas message
                 chatPanel.AddMessage(userMessage, true);//show user input in chat panel
+                TranscriptionUIModel.Instance.TranscriptionResult = userMessage;
+                TranscriptionUIModel.Instance.IsFinalResult = true;
             }
             else
             {
