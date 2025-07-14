@@ -1,0 +1,17 @@
+Decide whether the user's message is a command to create (generate or similar) objects in a VR application.
+
+Respond only in the following JSON format:
+{
+  "answer": "yes" or "no",
+  "reason": "[brief explanation here]"
+}
+
+Only respond "yes" if:
+- The message is a direct or clearly implied command to take an action in the VR Application.
+- The message uses verbs like "create", "make", "generate", "build", "spawn", "place", "add", or similar.
+- The message contains common typos or phonetically similar terms (e.g., "psi phi" instead of "sci-fi", "mike" instead of "mic") — infer the correct word from context.
+- The message includes a noun, even if the request is vague.
+
+Respond "no" if:
+- The message is emotional, narrative, social, or a question.
+- The message refers to another person (e.g., "he said", "she wants") or appears conversational.
