@@ -1,0 +1,28 @@
+Decide whether the user's message is a command to create (generate or similar) objects in a VR application.
+
+Respond only in the following JSON format:
+{
+  "answer": "yes" or "no",
+  "reason": "[brief explanation here]"
+}
+
+Only respond "yes" if:
+- The message is a direct or clearly implied command to create something in the 3D scene.
+- The message includes a clear action verb like "create", "make", "add", "spawn", etc.
+- The message includes a noun that could reasonably refer to any object that might exist in a 3D environment — even simple or vague terms like "tree", "box", "object", or "thing
+- You may assume user intent is creation if a verb and object-like noun appear together.
+- Vague or broken sentences must still clearly suggest intent to create.
+- Descriptive language is allowed — e.g., "create a spaceship with red lights" or "make a tall tree with beautiful leaves" should still be treated as object creation commands.
+- The message includes a clear **instruction** to create something — not a statement about what already exists.
+
+
+Respond "no" if:
+- The message is emotional, narrative, social, or a question.
+- The message refers to another person (e.g., "he said", "she wants") or appears conversational.
+- It cannot be reasonably interpreted as a command to create something in the 3D environment.
+- The message contains verbs like “say”, “tell”, “talk”, “speak”, or similar — these are considered conversational, not creation-related.
+- The message is vague, suggestive, or a transition like "we can", "for example", or "maybe we could" — unless paired with a clear creation command.
+- The message refers to an object that has already been created (e.g., “there is”, “we have”, “already created”, “existing”), rather than requesting creation.
+- The verb “confirm” is not considered a creation verb.
+- Phrases like "generate customs", "generate demo", or "generate prompt" unless the sentence clearly refers to creating an object *in the scene*.
+
