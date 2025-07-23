@@ -45,11 +45,13 @@ public class KeyboardPresenter : MonoBehaviour
             TranscriptionUIModel.Instance.TranscriptionResult = submittedText;
             TranscriptionUIModel.Instance.IsFinalResult = true;
         }
-        
+
         Debug.Log("Keyboard text submitted: " + submittedText);
-        
+
         // Optionally hide the keyboard after submission
-        HideNonNativeKeyboard();
+        //HideNonNativeKeyboard();
+        // Force untoggle of the keyboard button
+        keyboardView.ForceToggleKeyboardButton();
     }
 
     public void ShowNonNativeKeyboard()

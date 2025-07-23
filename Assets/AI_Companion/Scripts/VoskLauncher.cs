@@ -11,12 +11,15 @@ public class VoskLauncher : MonoBehaviour
     {
         // pythonw is used to run Python scripts without opening a console window
         // python is used to run Python scripts with a console window
+        string exeDirectory = System.IO.Directory.GetCurrentDirectory(); // This is where the .exe is
+        string voskScriptPath = System.IO.Path.Combine(exeDirectory, "Vosk_speech_to_text.py");
+
         string pythonPath = "pythonw";
-        string Vosk_Script_path = Application.dataPath + "/AI_Companion/Scripts/Python/Vosk_speech_to_text.py";
+        //string Vosk_Script_path = Application.dataPath + "/AI_Companion/Scripts/Python/Vosk_speech_to_text.py";
         var psi = new Diagnostics.ProcessStartInfo
         {
             FileName = pythonPath,
-            Arguments = $"\"{Vosk_Script_path}\"",
+            Arguments = $"\"{voskScriptPath}\"",
         };
 
         voskProcess = Diagnostics.Process.Start(psi);

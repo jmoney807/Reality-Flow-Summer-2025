@@ -25,7 +25,7 @@ namespace Neocortex.Samples
         private OllamaRequest request;
         private Queue<string> messageQueue = new();
         private Coroutine messageLoopCoroutine;
-        private string modelName = "llama3.2:1b"; // Default model name
+        private string modelName = "llama3.2:3b"; // Default model name
 
 
         private void Awake()
@@ -61,6 +61,13 @@ namespace Neocortex.Samples
 
         private IEnumerator HandleUserIntent(string userMessage)
         {
+            // 🛑 Skip any user message over 500 characters
+            if (userMessage.Length > 200)
+            {
+                Debug.LogWarning("⛔ Skipped LLM check — user message too long (" + userMessage.Length + " chars).");
+                yield break;
+            }
+
             // Load the response prompt from the text file
             //TextAsset promptAsset = Resources.Load<TextAsset>("ResponsePrompt");
             string promptPath = Path.Combine(Application.dataPath, "AI_Companion/Prompts/ResponsePrompt.txt");
@@ -81,13 +88,15 @@ namespace Neocortex.Samples
                 // Store the AI's response (lowercased and trimmed) and mark as done
                 result = response.message.ToLower().Trim();
 
+                //Debug.LogWarning("⚠️ Raw LLM response:\n" + result);
+
                 // Extract first JSON block using regex
-                Match match = Regex.Match(result, @"\{[\s\S]*?\}");
+                Match match = Regex.Match(result, @"\{\s*""answer""\s*:\s*""(yes|no)""\s*,\s*""reason""\s*:\s*""[^""]*""\s*\}");
 
                 if (match.Success)
                 {
                     string json = match.Value;
-                    Debug.Log($"✅ Extracted JSON: {json}");
+                    Debug.Log($"✅ Cleaned JSON: {json}");
 
                     try
                     {
@@ -120,6 +129,7 @@ namespace Neocortex.Samples
             // Unsubscribe from the response event to avoid duplicate handling
             request.OnChatResponseReceived -= OnResponse;
 
+            
             Debug.Log($"🔍 User message: \"{userMessage}");
             if (result == "yes")
             {

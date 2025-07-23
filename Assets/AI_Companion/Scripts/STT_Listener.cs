@@ -19,7 +19,7 @@ public class STT_Listener : MonoBehaviour
 
     private List<string> pendingFinals = new List<string>();
     private float bufferTimer = 0f;
-    private float bufferWindow = 1.0f; // tweak this if needed
+    private float bufferWindow = 0.7f; // tweak this if needed
     private bool buffering = false;
 
 
