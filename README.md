@@ -6,16 +6,17 @@ Voice Validator – Filters/validates speech so only relevant creation commands 
 
 You can run it VR or desktop, and you can swap in different STT (speech-to-text) and LLM backends.
 
-# 1) Install prerequisites (below) incl. Git LFS
-# 2) Clone the repo with LFS
- git lfs install
- git clone https://github.com/<your-org>/<repo>.git
- cd <repo>
+Tested On
+* Windows 11, Unity 6 (6000.1.2f1 LTS)
+* Quest 2/3 via Link/Air Link
 
-# 3) (Optional) Pull models via helper script
- scripts/setup_models.ps1   # Windows PowerShell
- # or
- bash scripts/setup_models.sh
+# 1) Install prerequisites
+* Unity 6
+* Git LFS
+* Docker
+* Allow Michrophone access (Windows Privacy Settings)
+
+# 2) Clone the repo
 
 # 4) Open in Unity 6 (exact version below) and open the Demo scene:
 #    Assets/Scenes/Demo_Room.unity
