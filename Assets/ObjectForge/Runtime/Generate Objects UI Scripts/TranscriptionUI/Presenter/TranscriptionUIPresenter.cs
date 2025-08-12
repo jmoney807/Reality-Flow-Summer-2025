@@ -63,7 +63,7 @@ public class TranscriptionUIPresenter : MonoBehaviour
 
     public void EditTranscriptionResult()
     {
-         Debug.Log("Editing transcription result.");
+        Debug.Log("Editing transcription result.");
 
         // Get the current transcription text
         string currentText = TranscriptionUIModel.Instance.TranscriptionResult;

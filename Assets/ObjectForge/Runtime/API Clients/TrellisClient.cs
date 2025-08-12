@@ -8,18 +8,9 @@ public class TrellisClient : MonoBehaviour
     public static event Action<byte[]> OnTrellisGenerationComplete;
     public static event Action<string> OnTrellisGenerationFailed;
 
-    private string apiKey;
-    [SerializeField] private string APIEndpoint = "http://localhost:7860";
+    // private string apiKey;
+    [SerializeField] private string APIEndpoint = "http://host.docker.internal:8003/get-glb";
 
-    private void Awake()
-    {
-        // // Load the HuggingFace API key from the .env file
-        // apiKey = EnvLoader.Get("HUGGINGFACE_API_KEY");
-        // if (string.IsNullOrEmpty(apiKey))
-        // {
-        //     Debug.LogError("HuggingFace API key is not set. Please check your .env file.");
-        // }
-    }
 
     public void GenerateTrellisObject(byte[] inputImage)
     {
@@ -31,11 +22,11 @@ public class TrellisClient : MonoBehaviour
     {
         Debug.Log("Requesting Trellis object generation...");
 
-        UnityWebRequest request = new UnityWebRequest(APIEndpoint, "POST");
-        request.uploadHandler = new UploadHandlerRaw(inputImage);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Authorization", $"Bearer {apiKey}");
-        request.SetRequestHeader("Content-Type", "image/png");
+        // Create multipart form data
+        WWWForm form = new WWWForm();
+        form.AddBinaryData("image", inputImage, "input_image.png", "image/png");
+
+        UnityWebRequest request = UnityWebRequest.Post(APIEndpoint, form);
 
         yield return request.SendWebRequest();
 
@@ -47,6 +38,14 @@ public class TrellisClient : MonoBehaviour
         else
         {
             string errorMessage = $"API Error: {request.error}\nResponse: {request.downloadHandler.text}";
+            
+            // // Check for quota exceeded error
+            // if (request.responseCode == 429 || request.downloadHandler.text.Contains("quota"))
+            // {
+            //     errorMessage = "GPU quota exceeded. Please try again later or upgrade to Hugging Face Pro.";
+            //     Debug.LogWarning("TRELLIS GPU quota exceeded");
+            // }
+            
             Debug.LogError(errorMessage);
             OnTrellisGenerationFailed?.Invoke(errorMessage);
         }

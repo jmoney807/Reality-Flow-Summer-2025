@@ -68,6 +68,13 @@ public class ImageGeneration : MonoBehaviour
         ImageGenerationUIModel.Instance.IsGeneratingImage = false;
     }
 
+    private void SetStableDiffusionClientParameters()
+    {
+        stableDiffusionClient.cfg_scale = StableDiffusionSettingsUIModel.Instance.CFGScale;
+        stableDiffusionClient.seed = StableDiffusionSettingsUIModel.Instance.Seed;
+    }
+
+
     public void GenerateImage()
     {
         Debug.Log("Image generation started.");
@@ -78,6 +85,9 @@ public class ImageGeneration : MonoBehaviour
     {
         // Sets the field and invokes the event to notify that image generation has started
         ImageGenerationUIModel.Instance.IsGeneratingImage = true;
+
+        // Set the body parameters for the StableDiffusionClient
+        SetStableDiffusionClientParameters();
 
         // Get the transcription result and pass it to the API
         string prompt = TranscriptionUIModel.Instance.TranscriptionResult;
@@ -119,6 +129,10 @@ public class ImageGeneration : MonoBehaviour
         }
 
         Debug.Log("Background removed successfully, displaying image");
+
+        // Update the previous setting parameters used
+        StableDiffusionSettingsUIModel.Instance.PreviousSeed = StableDiffusionSettingsUIModel.Instance.Seed;
+        StableDiffusionSettingsUIModel.Instance.PreviousCFGScale = StableDiffusionSettingsUIModel.Instance.CFGScale;
 
         // Sets the field and invokes the event to notify that image generation has completed
         ImageGenerationUIModel.Instance.IsGeneratingImage = false;

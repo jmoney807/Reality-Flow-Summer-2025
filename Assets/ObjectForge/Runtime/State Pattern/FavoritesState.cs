@@ -16,16 +16,15 @@ public class FavoritesState : IState
         LoadPremadesModel.Instance.WorkingDirectory = "All Premades/Favorites";
 
         // Set the boolean to track if the Favorites state is active
-        LoadPremadesModel.Instance.isFavoritesStateActive = true;
-        LoadPremadesModel.Instance.isRecycledStateActive = false;
+        LoadPremadesModel.Instance.IsFavoritesStateActive = true;
+        LoadPremadesModel.Instance.IsRecycledStateActive = false;
 
         LoadPremadesModel.Instance.CurrentState = this;
     }
 
     public void Exit()
     {
-        // Force the Pressable button to untoggle
-        LoadPremadesModel.Instance.stateButtons[1].ForceSetToggled(false);
+        LoadPremadesModel.Instance.ExitingState = this;
     }
 }
 

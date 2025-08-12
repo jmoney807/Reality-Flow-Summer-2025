@@ -3,23 +3,24 @@ using TMPro;
 using Unity.VisualScripting;
 using MixedReality.Toolkit.UX;
 
-public class GenerationSettingsUIView : MonoBehaviour
+public class SPAR3DSettingsView : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI paddingRatioText;
+    [Header("Text Components")]
+    [SerializeField] private TextMeshProUGUI foregroundRatioText;
     [SerializeField] private TextMeshProUGUI guidanceScaleValueText;
     [SerializeField] private TextMeshProUGUI seedValueText;
     [SerializeField] private TextMeshProUGUI textureResolutionText;
 
     [Header("Sliders")]
-    [SerializeField] private Slider paddingRatioSlider;
+    [SerializeField] private Slider foregroundRatioSlider;
     [SerializeField] private Slider guidanceScaleValueSlider;
     [SerializeField] private Slider seedValueSlider;
     [SerializeField] private Slider textureResolutionSlider;
 
-    public void UpdatePaddingRatioText(float value)
+    public void UpdateForegroundRatioText(float value)
     {
-        if (paddingRatioText != null)
-            paddingRatioText.text = value.ToString("F1"); //1 decimal place
+        if (foregroundRatioText != null)
+            foregroundRatioText.text = value.ToString("F1"); //1 decimal place
     }
 
     public void UpdateGuidanceScaleValueText(int value)
@@ -41,10 +42,10 @@ public class GenerationSettingsUIView : MonoBehaviour
     }
 
     // Methods to update sliders when model values change
-    public void UpdatePaddingRatioSlider(float value)
+    public void UpdateForegroundRatioSlider(float value)
     {
-        if (paddingRatioSlider != null)
-            paddingRatioSlider.Value = value;
+        if (foregroundRatioSlider != null)
+            foregroundRatioSlider.Value = value;
     }
 
     public void UpdateGuidanceScaleValueSlider(int value)
@@ -64,12 +65,4 @@ public class GenerationSettingsUIView : MonoBehaviour
         if (textureResolutionSlider != null)
             textureResolutionSlider.Value = value;
     }
-
-
-
-    // public void UpdateCfgValueText(float value)
-    // {
-    //     if (cfgValueText != null)
-    //         cfgValueText.text = value.ToString("F2"); // 2 decimal places
-    // }
 }
