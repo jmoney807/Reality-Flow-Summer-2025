@@ -8,7 +8,6 @@ namespace GenerativeAI.Whisper
 {
     public class Whisper : MonoBehaviour
     {
-        // public static Whisper Instance { get; private set; } // I dont think we need this singleton pattern here, as Whisper is not a manager class.
         public static event Action OnRecordingStarted;
         public static void RequestRecordingStart() => OnRecordingStarted?.Invoke();
 
@@ -24,10 +23,6 @@ namespace GenerativeAI.Whisper
         private readonly int duration = 5;  
         
         private AudioClip clip;
-
-        private void Start()
-        {
-        }
 
         private void OnEnable()
         {

@@ -73,7 +73,7 @@ public class CreatePremade : MonoBehaviour
         {
             Debug.LogWarning($"Directory already exists: {directoryPath}");
             // Add the unique timestamp to avoid overwriting
-            directoryPath = Path.Combine(directoryPath, $"{modelName}_{DateTime.Now:yyyyMMdd_HHmmss}");
+            directoryPath = Path.Combine(Application.dataPath, LoadPremadesModel.Instance.PremadesBaseDirectory,  $"{modelName}_{DateTime.Now:yyyyMMdd_HHmmss}");
             Directory.CreateDirectory(directoryPath); // Ensure the directory is created even if it exists
         }
 

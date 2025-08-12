@@ -3,6 +3,7 @@ using UnityEngine;
 public class ImageGenerationUIPresenter : MonoBehaviour
 {
     [SerializeField] private ImageGenerationUIView imageGenerationUIView;
+    [SerializeField] private TranscriptionUIView transcriptionUIView;
 
     public void OnEnable()
     {
@@ -49,6 +50,8 @@ public class ImageGenerationUIPresenter : MonoBehaviour
     {
         // Hide the image generation UI
         imageGenerationUIView.HideImageGenerationUI();
+        transcriptionUIView.ShowTranscriptionButtons();
+
 
         // CleanupImageGenerationUIModel();
         Debug.Log("Image Generation Cancelled, Performing Cleanup!");
@@ -58,8 +61,37 @@ public class ImageGenerationUIPresenter : MonoBehaviour
     public void RegenerateImage()
     {
         Debug.Log("Regenerating image...");
+        // Reset the seed value to a random number if it has not already been adjusted
+        // StableDiffusionSettingsUIModel.Instance.Seed = Random.Range(0, 10001);
 
-        // Add an advanced generation settings panel that opens up
-        // Here the user can adjust settings like seed, style, etc
+        if (CheckIfSettingsAreDifferent())
+        {
+            // MIGHT NEED TO ADD LOGIC TO CHECK IF SEED HAS BEEN CHANGED FROM 0, AND IF SO THEN WE MIGHT HAVE TO REVERT TO THE DEFAULT SEED OR ELSE GENERATION COULD BE THE SAME? BUT NOT SURE IF THATS THE CASE
+            ImageGeneration.RequestImageGeneration();
+        }
+        else
+        {
+            Debug.Log("Settings have not changed, cannot regenerate image.");
+            // Show a warning to the user that they need to change the settings before regenerating
+            // MAYBE IMPLEMENT A UI POPUP TO TELL THE USER THIS WITH SPECIFIC SETTINGS THAT HAVE NOT CHANGED
+        }
     }
+
+    public bool CheckIfSettingsAreDifferent()
+    {
+        int currentSeed = StableDiffusionSettingsUIModel.Instance.Seed;
+        int prevSeed = StableDiffusionSettingsUIModel.Instance.PreviousSeed;
+        int currentCFGScale = StableDiffusionSettingsUIModel.Instance.CFGScale;
+        int prevCFGScale = StableDiffusionSettingsUIModel.Instance.PreviousCFGScale;
+
+        // IMPLEMENT WARNINGS TO THE USER TO TELL THEM THE SPECIFIC SETTING HAS NOT CHANGED AND THEY CANNOT REGENERATE UNTIL THEY CHANGE IT
+        if (prevSeed == currentSeed && prevCFGScale == currentCFGScale)
+        {
+            Debug.Log("Settings have not changed, cannot regenerate image.");
+            return false;
+        }
+
+        return true;
+    }
+   
 }

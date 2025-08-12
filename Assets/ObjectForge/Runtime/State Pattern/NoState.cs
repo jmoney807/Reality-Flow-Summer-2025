@@ -10,12 +10,17 @@ public class NoState : IState
 
     public void Enter()
     {
+        // Make working directory empty or set to a default state
+        LoadPremadesModel.Instance.WorkingDirectory = string.Empty;
+        LoadPremadesModel.Instance.IsFavoritesStateActive = false;
+        LoadPremadesModel.Instance.IsRecycledStateActive = false;
         LoadPremadesModel.Instance.CurrentState = this;
     }
 
     public void Exit()
     {
-        // Logic for exiting the NoState
+        LoadPremadesModel.Instance.ExitingState = this;
+        Debug.Log("Exiting NoState");        
     }
 }
 

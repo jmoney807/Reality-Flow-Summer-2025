@@ -13,6 +13,13 @@ public class StableDiffusionClient : MonoBehaviour
     [SerializeField] private string apiEndpoint = "https://api.stability.ai/v2beta/stable-image/generate/sd3";
     private string apiKey;
 
+    [Header("Request Body Variables")]
+    [Range(0, 10000)]
+    public int seed = 0;
+
+    [Range(1, 10)]
+    public int cfg_scale = 4;
+
     private void Awake()
     {
         // Load the API key from the .env file
@@ -34,15 +41,20 @@ public class StableDiffusionClient : MonoBehaviour
         string prompt = transcriptionResult + " at a 3/4 perspective with no shadows";
         Debug.Log($"Prompt: {prompt}");
 
+        Debug.Log($"Sending request to {apiEndpoint} with seed {seed} and cfg_scale {cfg_scale}");
+
         // Create the multipart form with a string field that contains the prompt 
         List<IMultipartFormSection> formSections = new List<IMultipartFormSection>
         {
             new MultipartFormDataSection("prompt", prompt), // Required
-                                                           // Add other parameters as needed 
-                                                           // mode default: text-to-image
-                                                           // Can potentially add "negative_prompt" to omit certain things like nudity, etc.
-            new MultipartFormDataSection("style_preset", "3d-model")
-            // new MultipartFormDataSection("style_preset", "low-poly") // Example of a style
+                                                            // Add other parameters as needed 
+                                                            // mode default: text-to-image
+                                                            // Can potentially add "negative_prompt" to omit certain things like nudity, etc.
+            // new MultipartFormDataSection("model", "sd3.5-large-turbo"),
+            new MultipartFormDataSection("seed", seed.ToString()),
+            new MultipartFormDataSection("output_format", "png"),
+            new MultipartFormDataSection("style_preset", "3d-model"),
+            // new MultipartFormDataSection("cfg_scale", cfg_scale.ToString())
         };
 
         UnityWebRequest request = UnityWebRequest.Post(apiEndpoint, formSections);

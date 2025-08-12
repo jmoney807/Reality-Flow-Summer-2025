@@ -14,16 +14,15 @@ public class RecycleBinState : IState
         LoadPremadesModel.Instance.WorkingDirectory = "Recycle Bin";
 
         // Set the boolean to track if the Favorites state is active
-        LoadPremadesModel.Instance.isFavoritesStateActive = false;
+        LoadPremadesModel.Instance.IsFavoritesStateActive = false;
         // Set the boolean to track if the Recycle Bin state is active
-        LoadPremadesModel.Instance.isRecycledStateActive = true;
+        LoadPremadesModel.Instance.IsRecycledStateActive = true;
 
         LoadPremadesModel.Instance.CurrentState = this;
     }
 
     public void Exit()
     {
-        // Force the Pressable button to untoggle
-        LoadPremadesModel.Instance.stateButtons[3].ForceSetToggled(false);
+        LoadPremadesModel.Instance.ExitingState = this;
     }
 }

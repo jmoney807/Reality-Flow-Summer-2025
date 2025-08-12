@@ -22,6 +22,10 @@ public class LoadPremades : MonoBehaviour
     public static event Action OnUnfavoritePremadeRequested;
     public static void RequestUnfavoritePremade() => OnUnfavoritePremadeRequested?.Invoke();
 
+    // Events for permanently deleting actions
+    public static event Action OnPermanentDeletePremadeRequested;
+    public static void RequestPermanentDeletePremade() => OnPermanentDeletePremadeRequested?.Invoke();
+
     // Events for delete/restore actions
     public static event Action OnDeletePremadeRequested;
     public static void RequestDeletePremade() => OnDeletePremadeRequested?.Invoke();
@@ -45,10 +49,6 @@ public class LoadPremades : MonoBehaviour
     [Tooltip("Scale for loaded models")]
     [SerializeField] private float modelScale = 0.5f;
 
-    [Tooltip("Load models automatically on start")]
-    [SerializeField] private bool loadOnStart = true;
-
-
     [Tooltip("Reference to the NearBaseMenu object")]
     [SerializeField] private Transform nearBaseMenu;
 
@@ -65,11 +65,13 @@ public class LoadPremades : MonoBehaviour
     public void OnEnable()
     {
         OnLoadPremadeRequested += LoadPremade;
+
         OnFavoritePremadeRequested += FavoritePremade;
         OnUnfavoritePremadeRequested += UnfavoritePremade;
 
         OnDeletePremadeRequested += DeletePremade;
         OnRestorePremadeRequested += RestorePremade;
+        OnPermanentDeletePremadeRequested += PermanentlyDeletePremade;
 
         OnGetPremadeImageTextureRequested += GetPremadeImageTexture;
     }
@@ -82,6 +84,7 @@ public class LoadPremades : MonoBehaviour
 
         OnDeletePremadeRequested -= DeletePremade;
         OnRestorePremadeRequested -= RestorePremade;
+        OnPermanentDeletePremadeRequested -= PermanentlyDeletePremade;
 
         OnGetPremadeImageTextureRequested -= GetPremadeImageTexture;
     }
@@ -113,23 +116,27 @@ public class LoadPremades : MonoBehaviour
     public void FavoritePremade()
     {
         string premadeName = LoadPremadesModel.Instance.CurrentSelectedPremadeName;
+        LoadPremadesModel.Instance.IsCurrentSelectedPremadeFavorite = true;
 
         Debug.Log($"Favoriting premade: {premadeName}");
 
         MovePremadeToNewDirectory(premadeName, "All Premades", "All Premades/Favorites");
 
         LoadPremadesPresenter.RequestRefreshPremadeList();
+        LoadPremadesPresenter.RequestUpdateViewsActiveButtons();
     }
 
     public void UnfavoritePremade()
     {
         string premadeName = LoadPremadesModel.Instance.CurrentSelectedPremadeName;
+        LoadPremadesModel.Instance.IsCurrentSelectedPremadeFavorite = false;
 
         Debug.Log($"Unfavoriting premade: {premadeName}");
 
         MovePremadeToNewDirectory(premadeName, "All Premades/Favorites", "All Premades");
 
         LoadPremadesPresenter.RequestRefreshPremadeList();
+        LoadPremadesPresenter.RequestUpdateViewsActiveButtons();
     }
 
     public void MovePremadeToNewDirectory(string premadeName, string sourceDir, string newDir)
@@ -180,6 +187,7 @@ public class LoadPremades : MonoBehaviour
     public void DeletePremade()
     {
         string premadeName = LoadPremadesModel.Instance.CurrentSelectedPremadeName;
+        LoadPremadesModel.Instance.IsCurrentSelectedPremadeRecycled = true;
 
         string currentOpenedPremadeDirectory = LoadPremadesModel.Instance.CurrentSelectedPremadeDirectory;
 
@@ -188,75 +196,34 @@ public class LoadPremades : MonoBehaviour
         MovePremadeToNewDirectory(premadeName, currentOpenedPremadeDirectory, "Recycle Bin");
 
         LoadPremadesPresenter.RequestRefreshPremadeList();
+        LoadPremadesPresenter.RequestUpdateViewsActiveButtons();
 
         Debug.Log("Premade object moved to deleted folder and button list refreshed.");
-        // // Get the directory paths
-        // string basePath = Path.Combine(Application.dataPath, premadeBaseDirectory);
-        // string sourceDirectoryPath = Path.Combine(basePath, premadeModelName);
-        // string deletedBasePath = Path.Combine(basePath, "RecycleBin");
-        // string destinationDirectoryPath = Path.Combine(deletedBasePath, premadeModelName);
+    }
 
-        // try
-        // {
-        //     // Check if source directory exists
-        //     if (Directory.Exists(sourceDirectoryPath))
-        //     {
-        //         // Create the "deleted" directory if it doesn't exist
-        //         // if (!Directory.Exists(deletedBasePath))
-        //         // {
-        //         //     Directory.CreateDirectory(deletedBasePath);
-        //         //     Debug.Log($"Created deleted directory: {deletedBasePath}");
-        //         // }
+    public void PermanentlyDeletePremade()
+    {
+        string premadeName = LoadPremadesModel.Instance.CurrentSelectedPremadeName;
+        string currentOpenedPremadeDirectory = LoadPremadesModel.Instance.CurrentSelectedPremadeDirectory;
 
-        //         // Handle case where destination already exists (rename with timestamp)
-        //         if (Directory.Exists(destinationDirectoryPath))
-        //         {
-        //             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-        //             destinationDirectoryPath = Path.Combine(deletedBasePath, $"{premadeModelName}_{timestamp}");
-        //             Debug.Log($"Destination exists, using timestamped name: {destinationDirectoryPath}");
-        //         }
+        Debug.Log($"Permanently deleting premade object: {premadeName}");
 
-        //         // Move the directory to the deleted folder
-        //         Directory.Move(sourceDirectoryPath, destinationDirectoryPath);
+        // Get the full path to the premade directory
+        string fullPath = Path.Combine(Application.dataPath, premadeBaseDirectory, currentOpenedPremadeDirectory, premadeName);
 
-        //         // Verify move worked
-        //         if (!Directory.Exists(sourceDirectoryPath) && Directory.Exists(destinationDirectoryPath))
-        //         {
-        //             Debug.Log($"Successfully moved directory from {sourceDirectoryPath} to {destinationDirectoryPath}");
-        //         }
-        //         else
-        //         {
-        //             Debug.LogWarning($"Directory move may have failed. Source exists: {Directory.Exists(sourceDirectoryPath)}, Destination exists: {Directory.Exists(destinationDirectoryPath)}");
-        //         }
+        // Delete the directory and its contents
+        if (Directory.Exists(fullPath))
+        {
+            Directory.Delete(fullPath, true);
+            Debug.Log($"Permanently deleted premade: {fullPath}");
+        }
+        else
+        {
+            Debug.LogWarning($"Premade directory does not exist: {fullPath}");
+        }
 
-        //         // Hide the premade canvas
-        //         premadeCanvas.SetActive(false);
-
-        //         // Refresh the button list to remove the deleted item
-        //         LoadPremadesUIController.RequestPremadeListRefresh();
-
-        //         Debug.Log("Premade object moved to deleted folder and button list refreshed.");
-        //     }
-        //     else
-        //     {
-        //         Debug.LogWarning($"Source directory not found: {sourceDirectoryPath}");
-        //     }
-        // }
-        // catch (UnauthorizedAccessException e)
-        // {
-        //     Debug.LogError($"Access denied when moving directory: {e.Message}");
-        // }
-        // catch (DirectoryNotFoundException e)
-        // {
-        //     Debug.LogError($"Directory not found: {e.Message}");
-        // }
-        // catch (IOException e)
-        // {
-        //     Debug.LogError($"IO error when moving directory: {e.Message}");
-        // }
-        // catch (System.Exception e)
-        // {
-        //     Debug.LogError($"Failed to move premade object: {e.Message}");
+        LoadPremadesPresenter.RequestRefreshPremadeList();
+        // Implement the premade canvas closing
     }
 
 
@@ -264,12 +231,14 @@ public class LoadPremades : MonoBehaviour
     {
         string premadeName = LoadPremadesModel.Instance.CurrentSelectedPremadeName;
         string currentOpenedPremadeDirectory = LoadPremadesModel.Instance.CurrentSelectedPremadeDirectory;
+        LoadPremadesModel.Instance.IsCurrentSelectedPremadeRecycled = false;
 
         Debug.Log($"Restoring premade object from deleted folder: {premadeName}");
 
         MovePremadeToNewDirectory(premadeName, "Recycle Bin", "All Premades");
 
         LoadPremadesPresenter.RequestRefreshPremadeList();
+        LoadPremadesPresenter.RequestUpdateViewsActiveButtons();
 
         Debug.Log("Premade object restored from deleted folder and button list refreshed.");
     }
